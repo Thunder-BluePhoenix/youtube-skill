@@ -22,6 +22,9 @@ jobs:
             python "$f" --help > /dev/null
           done
 
+      - name: Chat app bundles build
+        run: python scripts/build_bundles.py
+
       - name: Shell installers
         run: shellcheck --severity=error install.sh uninstall.sh
 

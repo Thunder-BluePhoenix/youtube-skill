@@ -5,7 +5,8 @@ set -euo pipefail
 # Set CLAUDE_YOUTUBE_SRC to a local checkout to install from it instead of GitHub (used by CI).
 
 main() {
-    SKILL_DIR="${HOME}/.claude/skills/youtube"
+    # Claude Code reads ~/.claude/skills; Codex CLI and Gemini CLI read ~/.agents/skills
+    SKILL_DIRS=("${HOME}/.claude/skills/youtube" "${HOME}/.agents/skills/youtube")
     ARCHIVE_URL="https://github.com/Thunder-BluePhoenix/youtube-skill/archive/refs/heads/main.tar.gz"
     RAW_URL="https://raw.githubusercontent.com/Thunder-BluePhoenix/youtube-skill/main"
 
@@ -38,16 +39,19 @@ main() {
 
     # Replace any previous install so files removed upstream don't linger
     echo "Installing skill files..."
-    rm -rf "${SKILL_DIR}"
-    mkdir -p "${SKILL_DIR}"
-    cp -R "${SRC}/skills/claude-youtube/." "${SKILL_DIR}/"
+    for dir in "${SKILL_DIRS[@]}"; do
+        rm -rf "${dir}"
+        mkdir -p "${dir}"
+        cp -R "${SRC}/skills/claude-youtube/." "${dir}/"
+        echo "  Installed: ${dir}"
+    done
 
     echo ""
-    echo "claude-youtube installed to ${SKILL_DIR}"
+    echo "claude-youtube installed for Claude Code, Codex CLI, and Gemini CLI."
     echo ""
     echo "Usage:"
-    echo "  1. Start Claude Code:  claude"
-    echo "  2. Run commands:       /youtube audit"
+    echo "  Claude Code:          /youtube audit"
+    echo "  Codex / Gemini CLI:   ask \"youtube audit @yourchannel\""
     echo ""
     echo "To uninstall: curl -fsSL ${RAW_URL}/uninstall.sh | bash"
 }

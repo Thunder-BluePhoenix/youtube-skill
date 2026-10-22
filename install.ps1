@@ -12,7 +12,11 @@ function Install-ClaudeYouTube {
     Write-Host ""
 
     # $HOME and GetTempPath work on every OS; USERPROFILE/TEMP are Windows-only
-    $SkillDir = [IO.Path]::Combine($HOME, ".claude", "skills", "youtube")
+    # Claude Code reads ~/.claude/skills; Codex CLI and Gemini CLI read ~/.agents/skills
+    $SkillDirs = @(
+        [IO.Path]::Combine($HOME, ".claude", "skills", "youtube"),
+        [IO.Path]::Combine($HOME, ".agents", "skills", "youtube")
+    )
     $ArchiveUrl = "https://github.com/Thunder-BluePhoenix/youtube-skill/archive/refs/heads/main.zip"
     $RawUrl = "https://raw.githubusercontent.com/Thunder-BluePhoenix/youtube-skill/main"
     $TempDir = Join-Path ([IO.Path]::GetTempPath()) "claude-youtube-install-$(Get-Random)"
@@ -39,11 +43,14 @@ function Install-ClaudeYouTube {
 
         # Replace any previous install so files removed upstream don't linger
         Write-Host "Installing skill files..." -ForegroundColor Yellow
-        if (Test-Path $SkillDir) {
-            Remove-Item -Recurse -Force $SkillDir
+        foreach ($SkillDir in $SkillDirs) {
+            if (Test-Path $SkillDir) {
+                Remove-Item -Recurse -Force $SkillDir
+            }
+            New-Item -ItemType Directory -Force -Path $SkillDir | Out-Null
+            Copy-Item -Recurse -Force (Join-Path $SkillSrc "*") $SkillDir
+            Write-Host "  Installed: $SkillDir"
         }
-        New-Item -ItemType Directory -Force -Path $SkillDir | Out-Null
-        Copy-Item -Recurse -Force (Join-Path $SkillSrc "*") $SkillDir
     } catch {
         Write-Host "Installation failed: $($_.Exception.Message)" -ForegroundColor Red
         return
@@ -54,11 +61,11 @@ function Install-ClaudeYouTube {
     }
 
     Write-Host ""
-    Write-Host "claude-youtube installed to $SkillDir" -ForegroundColor Green
+    Write-Host "claude-youtube installed for Claude Code, Codex CLI, and Gemini CLI." -ForegroundColor Green
     Write-Host ""
     Write-Host "Usage:" -ForegroundColor Cyan
-    Write-Host "  1. Start Claude Code:  claude"
-    Write-Host "  2. Run commands:       /youtube audit"
+    Write-Host "  Claude Code:          /youtube audit"
+    Write-Host "  Codex / Gemini CLI:   ask `"youtube audit @yourchannel`""
     Write-Host ""
     Write-Host "To uninstall: irm $RawUrl/uninstall.ps1 | iex"
 }

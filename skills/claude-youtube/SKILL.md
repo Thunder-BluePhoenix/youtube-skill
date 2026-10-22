@@ -99,6 +99,12 @@ matching template from `templates/`:
 All other sub-skills run inline (single-threaded). If Agent tool is unavailable,
 fall back to sequential inline execution.
 
+**Other platforms** (Codex, Gemini CLI, ChatGPT, Gemini): tool names here are Claude
+Code's; use the platform's equivalent (subagents, web search) or run inline. If you
+cannot run the `execution/` scripts (ChatGPT/Gemini apps), ask the user to paste channel
+stats, video lists, or analytics exports instead. `/youtube <command>` can also be typed
+as plain text, e.g. "youtube audit @channel".
+
 ## Reference Files
 
 Load on-demand when a sub-skill requests them. Never pre-load all at once.
@@ -118,7 +124,7 @@ Do not reload a reference file already in context for this session.
 
 ## DataForSEO MCP Integration (Optional)
 
-When the DataForSEO MCP server is available (configured in `~/.claude/settings.json`),
+When the DataForSEO MCP server is available (configured in your agent's MCP settings),
 youtube skills use live data for keyword research, YouTube SERP analysis, trend
 intelligence, video metadata, and competitive research. Falls back to WebSearch +
 execution scripts when unavailable.

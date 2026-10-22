@@ -17,6 +17,7 @@ Thanks for helping improve Claude YouTube.
 - **Sub-skills** are single `.md` files in `sub-skills/`, not separate skill directories.
 - **References** stay focused and at 200 lines or fewer (CI enforces this).
 - **Python scripts** in `execution/` need a module docstring and an `argparse` CLI with `--help`. Keep them stdlib-only at import time; import optional packages (Google API client, yt-dlp) lazily and fail with an install hint.
+- Keep instructions platform-neutral where you can: the same files run in Claude Code, Codex, Gemini CLI, ChatGPT, and Gemini. Claude-only features (parallel agents, MCP) need a fallback.
 - Use kebab-case for file and directory names.
 - Never commit API keys, OAuth tokens, or `client_secret*.json` files.
 
@@ -28,6 +29,7 @@ CI runs these checks; you can run them locally:
 python -m compileall -q skills/claude-youtube/execution
 for f in skills/claude-youtube/execution/*.py; do python "$f" --help > /dev/null; done
 shellcheck --severity=error install.sh uninstall.sh
+python scripts/build_bundles.py   # ChatGPT / Gemini bundles
 wc -l skills/claude-youtube/SKILL.md
 ```
 
