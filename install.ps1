@@ -17,7 +17,7 @@ try {
 
 # Set paths
 $SkillDir = "$env:USERPROFILE\.claude\skills\youtube"
-$RepoUrl = "https://github.com/AgriciDaniel/claude-youtube"
+$RepoUrl = "https://github.com/Thunder-BluePhoenix/youtube-skill"
 
 # Create directories
 New-Item -ItemType Directory -Force -Path $SkillDir | Out-Null

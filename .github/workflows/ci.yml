@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Python scripts compile and expose --help
+        run: |
+          python -m compileall -q skills/claude-youtube/execution
+          for f in skills/claude-youtube/execution/*.py; do
+            python "$f" --help > /dev/null
+          done
+
+      - name: Shell installers
+        run: shellcheck --severity=error install.sh uninstall.sh
+
+      - name: Skill size limits
+        run: |
+          lines=$(wc -l < skills/claude-youtube/SKILL.md)
+          [ "$lines" -lt 500 ] || { echo "::error::SKILL.md is $lines lines (limit 500)"; exit 1; }
+          for f in skills/claude-youtube/references/*.md; do
+            n=$(wc -l < "$f")
+            [ "$n" -le 200 ] || echo "::warning file=$f::$n lines (guideline 200)"
+          done

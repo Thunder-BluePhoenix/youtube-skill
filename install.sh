@@ -5,7 +5,7 @@ set -euo pipefail
 
 main() {
     SKILL_DIR="${HOME}/.claude/skills/youtube"
-    REPO_URL="https://github.com/AgriciDaniel/claude-youtube"
+    REPO_URL="https://github.com/Thunder-BluePhoenix/youtube-skill"
 
     echo "=== Installing claude-youtube ==="
     echo ""
