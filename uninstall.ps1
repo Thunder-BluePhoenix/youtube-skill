@@ -1,15 +1,18 @@
 #!/usr/bin/env pwsh
-# claude-youtube uninstaller for Windows
+# claude-youtube uninstaller for Windows (also works with pwsh on macOS/Linux)
 
 $ErrorActionPreference = "Stop"
 
 Write-Host "=== Uninstalling claude-youtube ===" -ForegroundColor Cyan
 Write-Host ""
 
-$SkillDir = Join-Path $env:USERPROFILE ".claude" "skills" "youtube"
+# Join-Path only takes two parts on Windows PowerShell 5.1, so use IO.Path
+$SkillDir = [IO.Path]::Combine($HOME, ".claude", "skills", "youtube")
 if (Test-Path $SkillDir) {
     Remove-Item -Recurse -Force $SkillDir
     Write-Host "  Removed: $SkillDir" -ForegroundColor Green
+} else {
+    Write-Host "  Not installed: $SkillDir" -ForegroundColor Yellow
 }
 
 Write-Host ""

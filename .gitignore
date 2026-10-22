@@ -23,9 +23,14 @@ env/
 .DS_Store
 Thumbs.db
 
-# Claude Code
+# Claude Code / ruflo local state
 .claude/
+.claude-flow/
+.swarm/
 .tmp/
+*.db
+*.db-shm
+*.db-wal
 
 # YouTube API credentials (never commit)
 *oauth_token*.json
@@ -43,5 +48,5 @@ token.json
 
 # Development files (not part of the skill)
 skill-forge/
-claude.md
+CLAUDE.md
 youtube-research.md
