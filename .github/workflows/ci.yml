@@ -27,9 +27,48 @@ jobs:
 
       - name: Skill size limits
         run: |
+          status=0
           lines=$(wc -l < skills/claude-youtube/SKILL.md)
-          [ "$lines" -lt 500 ] || { echo "::error::SKILL.md is $lines lines (limit 500)"; exit 1; }
+          [ "$lines" -lt 500 ] || { echo "::error::SKILL.md is $lines lines (limit 500)"; status=1; }
           for f in skills/claude-youtube/references/*.md; do
             n=$(wc -l < "$f")
-            [ "$n" -le 200 ] || echo "::warning file=$f::$n lines (guideline 200)"
+            [ "$n" -le 200 ] || { echo "::error file=$f::$n lines (limit 200)"; status=1; }
           done
+          exit $status
+
+  install:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    env:
+      CLAUDE_YOUTUBE_SRC: ${{ github.workspace }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install and uninstall (bash)
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          bash install.sh
+          test -f ~/.claude/skills/youtube/SKILL.md
+          bash uninstall.sh
+          test ! -e ~/.claude/skills/youtube
+
+      - name: Install and uninstall (Windows PowerShell 5.1)
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: |
+          ./install.ps1
+          if (-not (Test-Path "$HOME\.claude\skills\youtube\SKILL.md")) { throw "install failed" }
+          ./uninstall.ps1
+          if (Test-Path "$HOME\.claude\skills\youtube") { throw "uninstall failed" }
+
+      - name: Install and uninstall (PowerShell 7)
+        shell: pwsh
+        run: |
+          ./install.ps1
+          if (-not (Test-Path ([IO.Path]::Combine($HOME, ".claude", "skills", "youtube", "SKILL.md")))) { throw "install failed" }
+          ./uninstall.ps1
+          if (Test-Path ([IO.Path]::Combine($HOME, ".claude", "skills", "youtube"))) { throw "uninstall failed" }

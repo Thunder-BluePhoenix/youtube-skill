@@ -20,19 +20,12 @@ when DataForSEO is unavailable.
 - [YouTube SERP Research Workflow](#youtube-serp-research-workflow)
 - [Key Constraints & Gotchas](#key-constraints--gotchas)
 
----
-
 ## Detection & Fallback
 
 Before using DataForSEO tools, check availability by calling any tool (e.g.,
 `serp_youtube_organic_live_advanced`). If the call fails or the tool is not
-found, fall back to WebSearch and execution scripts for that step.
-
-**Pattern:**
-1. Attempt DataForSEO tool call
-2. If successful → use live data
-3. If unavailable → fall back to WebSearch + execution scripts
-4. Never block a workflow because DataForSEO is unavailable
+found, fall back to WebSearch and execution scripts for that step. Never block a
+workflow because DataForSEO is unavailable.
 
 ## Default Parameters
 
@@ -49,10 +42,7 @@ DataForSEO charges per API call. Follow these rules:
 - **Batch keywords** into single calls (volume/difficulty/intent tools accept arrays)
 - **Don't re-fetch** data already retrieved in the same session
 - **Use `dataforseo_labs_google_keyword_overview`** for single-keyword lookups
-- **Default to limit=50** for list endpoints unless more results are needed
-- **Warn the user** before running expensive operations (large keyword lists, full crawls)
-
----
+- **Warn the user** before operations over ~$0.05 (large keyword lists, multiple YouTube SERP queries); typical workflows cost $0.002-$0.04
 
 ## YouTube-Specific Tools
 
@@ -90,8 +80,6 @@ DataForSEO charges per API call. Follow these rules:
 
 **Comments response:** Comment text, author, likes, reply count, timestamp
 **Subtitles response:** Full transcript text with language and auto-generation flags
-
----
 
 ## Keyword Research Tools
 
@@ -147,8 +135,6 @@ of competitor keyword coverage across both Google and YouTube.
 **YouTube context:** YouTube videos appear in AI citations. Use these to check
 if a creator's videos are being cited by AI platforms and identify gaps.
 
----
-
 ## Sub-Skill → DataForSEO Module Mapping
 
 | Sub-Skill | DataForSEO Modules | What It Gets |
@@ -197,17 +183,12 @@ Standard research pattern for any YouTube sub-skill:
    - Rising trend = act now, declining = avoid
 ```
 
----
-
 ## Key Constraints & Gotchas
 
 - **Google volume ≠ YouTube volume** -- DataForSEO provides Google Ads search volume, not YouTube-specific volume. Google volume is a strong proxy but not identical; some keywords are disproportionately searched on YouTube (gaming, tutorials) vs Google
-- **Batch keywords to save credits** -- volume, difficulty, and intent tools all accept arrays. Sending 20 keywords in one call costs the same as sending 1. Never loop single-keyword calls
-- **Never re-fetch in the same session** -- if you already retrieved keyword data or YouTube SERP results for a keyword earlier in the conversation, reuse that data instead of making another API call
 - **YouTube SERP results may lag** -- DataForSEO caches YouTube SERP data; results may be hours or days old. For trending topic analysis, supplement with `kw_data_google_trends_explore` for real-time signals
 - **Video info requires video_id, not URL** -- extract the video ID from URLs before calling `serp_youtube_video_info_live_advanced`. Format: 11-character alphanumeric string (e.g., `dQw4w9WgXcQ`)
 - **Comments tool returns limited depth** -- `serp_youtube_video_comments_live_advanced` returns top-level comments sorted by relevance, not all comments. Sufficient for audience gap analysis but not exhaustive
 - **Subtitles may be auto-generated** -- check the auto-generation flag in `serp_youtube_video_subtitles_live_advanced` responses. Auto-generated transcripts contain errors that affect content analysis accuracy
 - **CPC as RPM proxy is approximate** -- higher Google Ads CPC generally correlates with higher YouTube RPM for a topic, but the relationship is not linear. Use as a directional signal, not a precise estimate
 - **Trends data compares relative interest, not absolute volume** -- `kw_data_google_trends_explore` returns index values (0-100), not search counts. Always pair with volume data for a complete picture
-- **Cost awareness** -- typical YouTube workflow costs $0.002-$0.04. Warn the user before operations exceeding ~$0.05 (large keyword lists, multiple YouTube SERP queries)

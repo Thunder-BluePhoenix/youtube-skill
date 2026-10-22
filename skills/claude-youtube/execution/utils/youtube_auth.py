@@ -21,6 +21,14 @@ TOKEN_PATH = TMP_DIR / "youtube_oauth_token.json"
 CLIENT_SECRETS_PATH = Path.home() / ".claude" / "youtube_client_secrets.json"
 
 
+def _save_token(creds):
+    """Write the OAuth token readable only by the current user."""
+    fd = os.open(TOKEN_PATH, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+    with os.fdopen(fd, "w") as f:
+        f.write(creds.to_json())
+    os.chmod(TOKEN_PATH, 0o600)  # tighten tokens saved by older versions
+
+
 def get_api_key():
     """Return YouTube Data API v3 key from environment or config file."""
     key = os.environ.get("YOUTUBE_API_KEY")
@@ -99,8 +107,7 @@ def get_oauth_service(scopes=None):
     if creds and creds.expired and creds.refresh_token:
         try:
             creds.refresh(Request())
-            with open(TOKEN_PATH, "w") as f:
-                f.write(creds.to_json())
+            _save_token(creds)
         except Exception:
             creds = None
 
@@ -120,8 +127,7 @@ def get_oauth_service(scopes=None):
                 str(CLIENT_SECRETS_PATH), scopes
             )
             creds = flow.run_local_server(port=0)
-            with open(TOKEN_PATH, "w") as f:
-                f.write(creds.to_json())
+            _save_token(creds)
         except Exception as e:
             return None, {"error": f"OAuth flow failed: {e}"}
 

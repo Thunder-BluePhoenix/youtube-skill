@@ -194,24 +194,7 @@
 | Amazon Associates | 1-10% |
 | ClickBank / DigiStore24 | 20-75% |
 
-### Industry Context
-
-- Creator economy: **$127B+**
-- **28.6%** of creators rank YouTube as top income platform
-
----
-
 ## Key Constraints & Gotchas
 
-- YPP review takes ~1 month; plan content pipeline around the wait
-- July 2025 "Inauthentic content" policy targets mass-produced/templated videos
-- YouTube takes 30% of memberships and 30% of Super Chat -- factor into pricing
-- Shopping affiliate eligibility threshold is unclear (reported 1K-15K subs)
-- FTC penalties are $53,088 **per violation** -- both creator and brand are liable
-- YouTube paid promotion toggle alone does NOT satisfy FTC requirements
-- Paywalling membership content and showing it to non-members damages viewer trust
 - Shorts RPM is far lower than long-form ($0.01-$0.07 typical, up to $0.30 in finance vs $2-$40+)
-- US audience is 5-8x more valuable than SE Asian for ad revenue
-- Super Chat has a $2K/user/week hard cap
 - Premium Lite pays creators less than full Premium -- watch revenue mix
-- AI content requires double disclosure under FTC rules
